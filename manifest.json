@@ -1,0 +1,32 @@
+{
+    "name": "Puzzling Coins",
+    "version": "1.0",
+    "description": "Find the coins hidden in the page",
+    "manifest_version": 2,
+    "incognito": "split",
+    "icons": {
+      "128": "images/icon-128.png"
+      },
+    "web_accessible_resources": [
+      "images/coin.png",
+      "audio/coin.mp3",
+      "usersCase.json",
+      "images/wealth/001_030.png",
+      "images/wealth/031_050.png",
+      "images/wealth/051_080.png",
+      "images/wealth/081_150.png",
+      "images/wealth/151_229.png",
+      "images/wealth/230_inf.png"
+    ],
+    "background": {
+      "scripts": ["scripts/jquery-3.6.3.min.js"],
+      "persistent": false
+    }, 
+    "content_scripts": [
+    {
+        "css": ["styles/style.css"],
+        "js": ["scripts/jquery-3.6.3.min.js", "scripts/utilities.js", "scripts/content.js"],
+        "matches": ["https://*/*"]
+    }
+    ]
+  }

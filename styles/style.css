@@ -1,0 +1,37 @@
+.coin { 
+    position: absolute; 
+    z-index: 9999; 
+    width: 15px; 
+    height: 15px;
+    transition: transform 0.2s ease-out;
+}
+
+.coin-animate {
+    transform: translateY(-20px);
+}
+
+.coinAmount {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    
+    font-size: 1em;
+    font-family: 'DotGothic16', sans-serif;
+  
+    border: 3px inset rgba(49,24,16,255);
+    background-color: rgba(255,247,189,255);
+    border-radius: 5px;
+    
+  }
+  
+  .coinAmount p{
+    margin: 10px;
+  }
+  
+  .coinAmount img{
+    margin: 10px;
+  }
