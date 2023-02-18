@@ -1,7 +1,6 @@
 {
-    "coinsAmount": 0,
-    "yesterday": 0,
-    "today": 0,
-    "coinsToday": 0,
-    "richnessImg": "../images/richness/001_030.png"
+    "coinsAmount": 235,
+    "yesterdayWas": 0,
+    "todayIs": 0,
+    "coinsFoundToday": 0
 }

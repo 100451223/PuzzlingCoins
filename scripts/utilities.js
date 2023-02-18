@@ -46,7 +46,7 @@ function animateCoin(coin){
 
     setTimeout(function() {
         coin.classList.remove("coin-animate");
-    }, 400);
+    }, 350);
 
     setTimeout(function() {
         coin.remove();

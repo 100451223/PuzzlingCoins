@@ -10,7 +10,7 @@
     "web_accessible_resources": [
       "images/coin.png",
       "audio/coin.mp3",
-      "usersCase.json",
+      "json/usersCase.json",
       "images/wealth/001_030.png",
       "images/wealth/031_050.png",
       "images/wealth/051_080.png",

@@ -12,12 +12,12 @@
 
 .coinAmount {
     position: absolute;
-    bottom: 15px;
+    top: 15px;
     right: 15px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    z-index: 999;
+    z-index: 9999;
     
     font-size: 1em;
     font-family: 'DotGothic16', sans-serif;
