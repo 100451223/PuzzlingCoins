@@ -98,13 +98,16 @@ function showWealth(amount){
 
     let innerTxt = document.createElement("p");
     innerTxt.id = "coinAmountTxt";
-    innerTxt.innerText = "You have " +amount + " coins";
+    innerTxt.innerText = "You have " +amount + " coins!";
 
     outerDiv.appendChild(innerImg);
     outerDiv.appendChild(innerTxt);
 
     document.body.appendChild(outerDiv);
-    setTimeout(()=>outerDiv.remove(), 5000);
+    setTimeout(()=>{
+        outerDiv.classList.add("coinAmountDissapear")
+        setTimeout(()=>{outerDiv.remove();}, 1000);
+    }, 2500);
 
 }
 

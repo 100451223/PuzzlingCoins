@@ -10,8 +10,32 @@
     transform: translateY(-20px);
 }
 
+@keyframes appear {
+  0% {
+    transform: translateX(500px);
+  }
+  50% {
+    transform: translateX(0px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+@keyframes dissapear {
+  0% {
+    transform: translateX(0px);
+  }
+  50% {
+    transform: translateX(0px);
+  }
+  100% {
+    transform: translateX(500px);
+  }
+}
+
 .coinAmount {
-    position: absolute;
+    position: fixed;
     top: 15px;
     right: 15px;
     display: inline-flex;
@@ -22,10 +46,16 @@
     font-size: 1em;
     font-family: 'DotGothic16', sans-serif;
   
-    border: 3px inset rgba(49,24,16,255);
+    border: 3px inset rgba(48,16,9,255);
     background-color: rgba(255,247,189,255);
     border-radius: 5px;
+
+    animation: appear 1s;
     
+  }
+
+  .coinAmountDissapear{
+    animation: dissapear 1s;
   }
   
   .coinAmount p{
