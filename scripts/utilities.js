@@ -94,7 +94,7 @@ function showWealth(amount){
     document.body.appendChild(outerDiv);
     setTimeout(()=>{
         outerDiv.classList.add("coinAmountDissapear")
-        setTimeout(()=>{outerDiv.remove();}, 1000);
+        setTimeout(()=>{outerDiv.remove();}, 950);
     }, 2500);
 
 }
