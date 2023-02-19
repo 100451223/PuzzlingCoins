@@ -28,9 +28,6 @@ for(let i=0; i<n; i++) {
 
         incrementUsersCoinAmount();
 
-        animateCoin(newCoin);
-
-
       }, {once : true});
 
 }

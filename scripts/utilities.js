@@ -25,7 +25,7 @@ function selectRandomClickableElems(clickableElemArray){
 }
 
 function createNewCoin(X,Y){
-    /* Create a new coin element */
+    /* Create a new coin element. Delete it after 550ms */
 
     let coin = document.createElement("img");
     coin.className = "coin";
@@ -34,23 +34,11 @@ function createNewCoin(X,Y){
     coin.style.top = Y - 10 + "px";
     document.body.appendChild(coin);
 
-    return coin;
-}
-
-function animateCoin(coin){
-    /* """Play""" an animation for the coin, then delete it */
-
-    setTimeout(()=>{
-        coin.classList.add("coin-animate");
-    }, 50);
-
-    setTimeout(function() {
-        coin.classList.remove("coin-animate");
-    }, 350);
-
     setTimeout(function() {
         coin.remove();
-    }, 600);
+      }, 550);
+
+    return coin;
 }
 
 function addCoinAudio(){

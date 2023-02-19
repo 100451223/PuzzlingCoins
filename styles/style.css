@@ -1,13 +1,13 @@
-.coin { 
-    position: absolute; 
-    z-index: 9999; 
-    width: 15px; 
-    height: 15px;
-    transition: transform 0.2s ease-out;
-}
-
-.coin-animate {
+@keyframes coinJump {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
     transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 @keyframes appear {
@@ -32,6 +32,14 @@
   100% {
     transform: translateX(500px);
   }
+}
+
+.coin { 
+  position: absolute; 
+  z-index: 9999; 
+  width: 15px; 
+  height: 15px;
+  animation: coinJump 0.5s;
 }
 
 .coinAmount {
