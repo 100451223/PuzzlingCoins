@@ -7,6 +7,10 @@
     "icons": {
       "128": "images/icon-128.png"
       },
+    "permissions": [
+      "storage",
+      "downloads"
+    ],
     "web_accessible_resources": [
       "images/coin.png",
       "audio/coin.mp3",

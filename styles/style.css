@@ -29,6 +29,8 @@
   }
   
   .coinAmount p{
+    color: black;
+    font-size: 1em;
     margin: 10px;
   }
   
