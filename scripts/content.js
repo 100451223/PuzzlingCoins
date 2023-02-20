@@ -9,27 +9,31 @@ let audio = addCoinAudio();
 
 initialSetUp()
 const clickableItems = getClickableItems();
-const randomCoinElements = selectRandomClickableElems(clickableItems);
 
+if (clickableItems.length!=0){
 
+  const randomCoinElements = selectRandomClickableElems(clickableItems);
 
+  for(let i=0; i<n; i++) {
 
+      console.log(randomCoinElements[i]);
 
-for(let i=0; i<n; i++) {
+      randomCoinElements[i].addEventListener("click", function(event) {
+          
+          event.preventDefault();
+          
+          audio.play();
+          
+          let newCoin = createNewCoin(event.pageX, event.pageY);
 
-    console.log(randomCoinElements[i]);
+          incrementUsersCoinAmount();
 
-    randomCoinElements[i].addEventListener("click", function(event) {
-        event.preventDefault();
-        
-        audio.play();
-        
-        let newCoin = createNewCoin(event.pageX, event.pageY);
+        }, {once : true});
 
-        incrementUsersCoinAmount();
+  }
 
-      }, {once : true});
-
+} else {
+  console.log("Oh my! It appears to be no coins in this page!\nBut don't despair, a true gentleman nevers gives up, I am certain that you will are coins in other pages.");
 }
 
 initialSetUp();
