@@ -1,5 +1,3 @@
-chrome.scripting.insertCSS(tab.id, {code:'../styles/style.css', allFrames:false, runAt:"document_end"});
-
 // Description: This script is injected into the page when the extension is enabled
 const n = 10; // Number of coins to drop
 

@@ -62,6 +62,41 @@ function createCharacterSprite(character, text){
     characterContainer.appendChild(characterImage);
 
     document.body.append(characterContainer);
-    talk(150, 3500)
 }
-createCharacterSprite("ether", "My name is Ether Netts, and I am a student at Gressenheller University. Professor Hershel Layton is my archaeology teacher.");
+//createCharacterSprite("ether", "My name is Ether Netts, and I am a student at Gressenheller University. Professor Hershel Layton is my archaeology teacher.");
+
+/* To fit de dialogue box */
+const maxWordsPerComment = 20;
+let comments = [];
+let currentComment = 0;
+
+function showDialogue(character, position, text){
+
+    let textWords = text.split(" ");
+    
+    for(let i=0; i<textWords.length; i+=maxWordsPerComment){
+        let comment = textWords.slice(i, i+maxWordsPerComment).join(" ");
+        comments.push(comment);
+    }
+
+    // Show the first comment
+    createCharacterSprite(character, comments[0]);
+    talk(150, 3500);
+    currentComment++;
+    //createCharacterSprite(character, text);
+
+    document.getElementsByClassName("dialogueBox")[0].addEventListener("click", function(){
+        if (currentComment != comments.length){
+            currentComment++;
+            document.getElementsByClassName("dialogueText")[0].innerText = comments[currentComment-1];
+            talk(150, 3500);
+        } else {
+            document.getElementsByClassName("characterContainer")[0].remove();
+            currentComment = 0;
+            comments = [];
+        }
+    });
+
+}
+
+showDialogue("ether", "left", "My name is Ether Netts, and I am a student at Gressenheller University. Professor Hershel Layton is my archaeology teacher. Although to be fair, he doesn't show up to class all that much...")

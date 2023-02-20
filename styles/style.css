@@ -278,6 +278,7 @@
   }
   
   p.dialogueText{
+    min-height: 48px;
     font-size: 10pt;
     margin-bottom: 15px;
   }
