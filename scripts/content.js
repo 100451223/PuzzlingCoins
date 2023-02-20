@@ -1,3 +1,5 @@
+chrome.scripting.insertCSS(tab.id, {code:'../styles/style.css', allFrames:false, runAt:"document_end"});
+
 // Description: This script is injected into the page when the extension is enabled
 const n = 10; // Number of coins to drop
 
@@ -19,7 +21,7 @@ if (clickableItems.length!=0){
       console.log(randomCoinElements[i]);
 
       randomCoinElements[i].addEventListener("click", function(event) {
-          
+          console.log(event.cancelable);
           event.preventDefault();
           
           audio.play();

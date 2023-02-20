@@ -9,7 +9,8 @@
       },
     "permissions": [
       "storage",
-      "downloads"
+      "downloads",
+      "tabs"
     ],
     "web_accessible_resources": [
       "images/coin.png",
@@ -20,7 +21,10 @@
       "images/wealth/051_080.png",
       "images/wealth/081_150.png",
       "images/wealth/151_229.png",
-      "images/wealth/230_inf.png"
+      "images/wealth/230_inf.png",
+      "images/characters/ether/ether_ClosedMouth.png",
+      "images/characters/ether/ether_OpenMouth.png",
+      "images/dialogueBox.png"
     ],
     "background": {
       "scripts": ["scripts/jquery-3.6.3.min.js"],
@@ -29,7 +33,7 @@
     "content_scripts": [
     {
         "css": ["styles/style.css"],
-        "js": ["scripts/jquery-3.6.3.min.js", "scripts/utilities.js", "scripts/content.js"],
+        "js": ["scripts/jquery-3.6.3.min.js", "scripts/utilities.js", "scripts/characterAnimation.js", "scripts/content.js"],
         "matches": ["https://*/*"]
     }
     ]
