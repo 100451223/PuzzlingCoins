@@ -145,27 +145,64 @@ function showDialogue(character, position, text){
 }
 
 function writeText(text){
+
     let textBox = document.getElementsByClassName("dialogueText")[0];
     let currentlyAt = 0;
     currentlyWritingText = true;
 
-    let interval = setInterval(function(){
-        textBox.innerText = text.slice(0, currentlyAt);
-        currentlyAt++;
+    let animationFrame = null;
+    let frameCount = 0; 
+    const FPS = 20; /* Objective FPS  frequency */
 
-        if (currentlyAt > text.length){
-            clearInterval(interval);
-            currentlyWritingText = false;
+    function animate() {
+
+        if (!frameCount) {
+            textBox.innerText = text.slice(0, currentlyAt);
+            currentlyAt++;
+            console.log("currentlyAt: ", currentlyAt);
+
+            if (currentlyAt > text.length || !currentlyWritingText) {
+                currentlyWritingText = false;
+                window.cancelAnimationFrame(animationFrame);
+                return;
+            }
+
+            if (fastWrite){
+                currentlyWritingText = false;
+                window.cancelAnimationFrame(animationFrame);
+                textBox.innerText = text;
+                fastWrite = false;
+                return;
+            }
         }
 
-        if(fastWrite){
-            clearInterval(interval);
-            textBox.innerText = text;
-            currentlyWritingText = false;
-            fastWrite = false;
-        }
+        frameCount = (frameCount + 1) % (60 / FPS);
+        animationFrame = window.requestAnimationFrame(animate);
 
-    }, 50);
+        /* 
+        
+        Ok, so this is how it works:
+        
+        First, the function Animate is declared withing the writeText function. After being declared, it has to be called,
+        so we ask the browser for a new animation frame. 
+
+        The, after calling animate once, to keep writing, we need to call it again to keep writing, so we need to ask the 
+        browser for a new animation frame. Thus, we call it recursively until: a.) the text is fully written, or b.) the user
+        clicks the dialogue box, and the rest of the text is written immediatly. If any of these two conditions are met, the
+        function returns all the way back, and the animation frame is cancelled.
+
+        Also, setting the frameCount to 0, and then incrementing it every time the function is called, we can control the
+        frequency of the animation. The new characters are written every 60/20 = 3 frames.
+
+        The previous version of this function was using a setInterval, but due to every browser being stupid and limiting 
+        setInterval to 1000ms when the tab is not active (or focused), it was changed to use requestAnimationFrame instead.
+
+        */
+
+    }
+
+    animationFrame = window.requestAnimationFrame(animate);
+
         
 }
 

@@ -269,6 +269,10 @@
     bottom: 0px;
     width: 100%;
   }
+
+  .dialogueBox:hover{
+    cursor: pointer;
+  }
   
   .dialogueBoxImage{
     height: 100%;
