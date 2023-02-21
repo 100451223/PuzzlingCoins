@@ -46,7 +46,7 @@ function createCharacterSprite(character, text){
 
     let dialogueText = document.createElement("p");
     dialogueText.className = "dialogueText";
-    dialogueText.innerText = text;
+    dialogueText.innerText = "";
 
     let dialogueBoxImage = document.createElement("img");
     dialogueBoxImage.className = "dialogueBoxImage";
@@ -74,6 +74,8 @@ const maxWordsPerComment = 20;
 let comments = [];
 let currentComment = 0;
 let maxCharactersPerComment = 120;
+let currentlyWritingText = false;
+fastWrite = false;
 
 function showDialogue(character, position, text){
 
@@ -107,6 +109,7 @@ function showDialogue(character, position, text){
 
     // Show the first comment
     createCharacterSprite(character, comments[0]);
+    writeText(comments[0]);
     if(talkIntervalId != null){
         clearInterval(talkIntervalId);
         talkIntervalId = null;
@@ -116,21 +119,54 @@ function showDialogue(character, position, text){
     //createCharacterSprite(character, text);
 
     document.getElementsByClassName("dialogueBox")[0].addEventListener("click", function(){
-        if (currentComment != comments.length){
-            currentComment++;
-            document.getElementsByClassName("dialogueText")[0].innerText = comments[currentComment-1];
-            if(talkIntervalId != null){
-                clearInterval(talkIntervalId);
-                talkIntervalId = null;
+        if (currentComment != comments.length || currentlyWritingText){
+
+            if(currentlyWritingText){
+                fastWrite = true;
+            } else {
+                currentComment++;
+                writeText(comments[currentComment-1]);
+                if(talkIntervalId != null){
+                    clearInterval(talkIntervalId);
+                    talkIntervalId = null;
+                }
+                talk(150, 3500);
             }
-            talk(150, 3500);
+
+            
         } else {
+            
             document.getElementsByClassName("characterContainer")[0].remove();
             currentComment = 0;
             comments = [];
         }
     });
 
+}
+
+function writeText(text){
+    let textBox = document.getElementsByClassName("dialogueText")[0];
+    let currentlyAt = 0;
+    currentlyWritingText = true;
+
+    let interval = setInterval(function(){
+        textBox.innerText = text.slice(0, currentlyAt);
+        currentlyAt++;
+
+        if (currentlyAt > text.length){
+            clearInterval(interval);
+            currentlyWritingText = false;
+        }
+
+        if(fastWrite){
+            clearInterval(interval);
+            textBox.innerText = text;
+            currentlyWritingText = false;
+            fastWrite = false;
+        }
+
+    }, 50);
+        
 }
 
 showDialogue("ether", "left", "Hello there! Nice to meet you. -> My name is Ether Netts, and I am a student at Gressenheller University. Professor Hershel Layton is my archaeology teacher. Although to be fair, he doesn't show up to class all that much... The thing is, last time he came by I suggested a theme for my homework about 'Digital Archaeology', and he seemed to be into it, so we decided to work together on it. Of course, I'll be leading the analysis since he's probably out there dealing with deadly reliqs, time travel or ancient civilizations. You know how he is, he can't leave any puzzle unsolved. -> Anyway, he might pop up sometime with a puzzle or something.")
