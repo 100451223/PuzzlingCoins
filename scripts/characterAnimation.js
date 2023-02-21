@@ -1,6 +1,8 @@
+let talkIntervalId = null;
+
 function talk(mouthSpeed, talkTime){
     let characterSprite = document.getElementsByClassName("characterContainer")[0];
-    let interval = setInterval(function(){
+    talkIntervalId = setInterval(function(){
         if (characterSprite.children[1].src.includes("ClosedMouth")){
             characterSprite.children[1].src = characterSprite.children[1].src.replace("ClosedMouth", "OpenMouth");
         } else {
@@ -8,7 +10,9 @@ function talk(mouthSpeed, talkTime){
         }
     }, mouthSpeed);
     setTimeout(function(){
-        clearInterval(interval);
+        if(talkIntervalId != null)
+            clearInterval(talkIntervalId);
+        talkIntervalId = null;
         if (characterSprite.children[1].src.includes("OpenMouth")){
             characterSprite.children[1].src = characterSprite.children[1].src.replace("OpenMouth", "ClosedMouth");
         }
@@ -69,18 +73,44 @@ function createCharacterSprite(character, text){
 const maxWordsPerComment = 20;
 let comments = [];
 let currentComment = 0;
+let maxCharactersPerComment = 120;
 
 function showDialogue(character, position, text){
 
     let textWords = text.split(" ");
-    
-    for(let i=0; i<textWords.length; i+=maxWordsPerComment){
-        let comment = textWords.slice(i, i+maxWordsPerComment).join(" ");
-        comments.push(comment);
+
+    let currentComment = 0;
+    let currentCommentLen = 0;
+    let currentComentWords = [];
+
+    for (let i = 0; i < textWords.length; i++){
+        if (currentCommentLen + textWords[i].length < maxCharactersPerComment && i!=textWords.length-1 && textWords[i] != "->"){
+            currentCommentLen += textWords[i].length;
+            currentComentWords.push(textWords[i]);
+        } else {
+            if (i==textWords.length-1){
+                currentComentWords.push(textWords[i]);
+            }
+            
+            comments.push(currentComentWords.join(" "));
+            if(textWords[i] == "->"){
+                currentCommentLen = 0;
+                currentComentWords = [];
+            } else {
+                currentComentWords = [textWords[i]];
+                currentCommentLen = textWords[i].length;
+            }
+        }
     }
+
+    console.log(comments);
 
     // Show the first comment
     createCharacterSprite(character, comments[0]);
+    if(talkIntervalId != null){
+        clearInterval(talkIntervalId);
+        talkIntervalId = null;
+    }
     talk(150, 3500);
     currentComment++;
     //createCharacterSprite(character, text);
@@ -89,6 +119,10 @@ function showDialogue(character, position, text){
         if (currentComment != comments.length){
             currentComment++;
             document.getElementsByClassName("dialogueText")[0].innerText = comments[currentComment-1];
+            if(talkIntervalId != null){
+                clearInterval(talkIntervalId);
+                talkIntervalId = null;
+            }
             talk(150, 3500);
         } else {
             document.getElementsByClassName("characterContainer")[0].remove();
@@ -99,4 +133,4 @@ function showDialogue(character, position, text){
 
 }
 
-showDialogue("ether", "left", "My name is Ether Netts, and I am a student at Gressenheller University. Professor Hershel Layton is my archaeology teacher. Although to be fair, he doesn't show up to class all that much...")
+showDialogue("ether", "left", "Hello there! Nice to meet you. -> My name is Ether Netts, and I am a student at Gressenheller University. Professor Hershel Layton is my archaeology teacher. Although to be fair, he doesn't show up to class all that much... The thing is, last time he came by I suggested a theme for my homework about 'Digital Archaeology', and he seemed to be into it, so we decided to work together on it. Of course, I'll be leading the analysis since he's probably out there dealing with deadly reliqs, time travel or ancient civilizations. You know how he is, he can't leave any puzzle unsolved. -> Anyway, he might pop up sometime with a puzzle or something.")
