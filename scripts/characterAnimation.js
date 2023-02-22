@@ -1,26 +1,16 @@
+/* Global Variables */
+
+const maxWordsPerComment = 20;
+const maxCharactersPerComment = 120;
+let comments = [];
+let currentComment = 0;
+let currentlyWritingText = false;
+let fastWrite = false;
 let talkIntervalId = null;
 
-function talk(mouthSpeed, talkTime){
-    let characterSprite = document.getElementsByClassName("characterContainer")[0];
-    talkIntervalId = setInterval(function(){
-        if (characterSprite.children[1].src.includes("ClosedMouth")){
-            characterSprite.children[1].src = characterSprite.children[1].src.replace("ClosedMouth", "OpenMouth");
-        } else {
-            characterSprite.children[1].src = characterSprite.children[1].src.replace("OpenMouth", "ClosedMouth");
-        }
-    }, mouthSpeed);
-    setTimeout(function(){
-        if(talkIntervalId != null)
-            clearInterval(talkIntervalId);
-        talkIntervalId = null;
-        if (characterSprite.children[1].src.includes("OpenMouth")){
-            characterSprite.children[1].src = characterSprite.children[1].src.replace("OpenMouth", "ClosedMouth");
-        }
-    }, talkTime);
-}
+/* Functions */
 
-
-function createCharacterSprite(character, text){
+function createCharacterSprite(character){
     /* create a character sprite for "character" with a dialogue box containing "text" 
 
     Sprite Structure:
@@ -55,10 +45,8 @@ function createCharacterSprite(character, text){
     let characterImage = document.createElement("img");
     characterImage.className = "characterImage";
 
-    characterImage.src = chrome.extension.getURL(`../images/characters/${character}/${character}_ClosedMouth.png`);
+    characterImage.src = chrome.extension.getURL(`../images/characters/${character}/idle_ClosedMouth.png`);
     
-    
-
     dialogueBox.appendChild(characterName);
     dialogueBox.appendChild(dialogueText);
     dialogueBox.appendChild(dialogueBoxImage);
@@ -67,21 +55,38 @@ function createCharacterSprite(character, text){
 
     document.body.append(characterContainer);
 }
-//createCharacterSprite("ether", "My name is Ether Netts, and I am a student at Gressenheller University. Professor Hershel Layton is my archaeology teacher.");
 
-/* To fit de dialogue box */
-const maxWordsPerComment = 20;
-let comments = [];
-let currentComment = 0;
-let maxCharactersPerComment = 120;
-let currentlyWritingText = false;
-fastWrite = false;
+function talk(mouthSpeed, talkTime, emotion = "idle"){
+    /* Makes the character talk by changing the mouth image every "mouthSpeed" miliseconds for "talkTime" miliseconds.*/
 
-function showDialogue(character, position, text){
+    let characterSprite = document.getElementsByClassName("characterContainer")[0];
+    let pathToSprite = characterSprite.children[1].src.split("/").slice(0, -1).join("/") + "/";
+    
+    talkIntervalId = setInterval(function(){
+        if (characterSprite.children[1].src.includes("ClosedMouth")){
+            characterSprite.children[1].src = pathToSprite + emotion +"_OpenMouth.png";
+        } else {
+            characterSprite.children[1].src = pathToSprite + emotion +"_ClosedMouth.png";
+        }
+    }, mouthSpeed);
 
+    /* Shut the character up */
+    setTimeout(function(){
+        if(talkIntervalId != null)
+            clearInterval(talkIntervalId);
+        talkIntervalId = null;
+        if (characterSprite.children[1].src.includes("OpenMouth")){
+            characterSprite.children[1].src = pathToSprite + emotion +"_ClosedMouth.png";
+        }
+    }, talkTime);
+}
+
+function splitDialogue(text){
+    /* Splits the text "text" into comments of "maxWordsPerComment" words */
+    
+    let splittedLines = [];
+    
     let textWords = text.split(" ");
-
-    let currentComment = 0;
     let currentCommentLen = 0;
     let currentComentWords = [];
 
@@ -94,7 +99,7 @@ function showDialogue(character, position, text){
                 currentComentWords.push(textWords[i]);
             }
             
-            comments.push(currentComentWords.join(" "));
+            splittedLines.push(currentComentWords.join(" "));
             if(textWords[i] == "->"){
                 currentCommentLen = 0;
                 currentComentWords = [];
@@ -105,9 +110,19 @@ function showDialogue(character, position, text){
         }
     }
 
-    console.log(comments);
+    return splittedLines;
+}
 
-    // Show the first comment
+/* To fit de dialogue box */
+
+
+function showDialogue(character, position, text){
+    /* Shows a dialogue box with the character "character" in the position "position" with the text "text" */
+
+    // Split the dialogue 
+    comments = splitDialogue(text);
+
+    // Create the sprite and write the first comment right away
     createCharacterSprite(character, comments[0]);
     writeText(comments[0]);
     if(talkIntervalId != null){
@@ -130,12 +145,13 @@ function showDialogue(character, position, text){
                     clearInterval(talkIntervalId);
                     talkIntervalId = null;
                 }
-                talk(150, 3500);
-            }
+                // select a random element from an array
 
-            
+                let emotions = ["idle", "sigh", "sweat", "angry"];
+                let randomEmotion = emotions[Math.floor(Math.random() * emotions.length)];
+                talk(150, 3500, randomEmotion);
+            }            
         } else {
-            
             document.getElementsByClassName("characterContainer")[0].remove();
             currentComment = 0;
             comments = [];
@@ -145,6 +161,7 @@ function showDialogue(character, position, text){
 }
 
 function writeText(text){
+    /* Writes the text "text" in the dialogue box */
 
     let textBox = document.getElementsByClassName("dialogueText")[0];
     let currentlyAt = 0;
@@ -152,9 +169,10 @@ function writeText(text){
 
     let animationFrame = null;
     let frameCount = 0; 
-    const FPS = 20; /* Objective FPS  frequency */
+    const FPS = 30; /* Objective FPS  frequency */
 
     function animate() {
+        /* This function is called every frame, it """writes a character at the time""" */
 
         if (!frameCount) {
             textBox.innerText = text.slice(0, currentlyAt);
@@ -179,8 +197,8 @@ function writeText(text){
         frameCount = (frameCount + 1) % (60 / FPS);
         animationFrame = window.requestAnimationFrame(animate);
 
-        /* 
-        
+        /* Explanation of requestAnimationFrame:
+
         Ok, so this is how it works:
         
         First, the function Animate is declared withing the writeText function. After being declared, it has to be called,
@@ -203,7 +221,6 @@ function writeText(text){
 
     animationFrame = window.requestAnimationFrame(animate);
 
-        
 }
 
 showDialogue("ether", "left", "Hello there! Nice to meet you. -> My name is Ether Netts, and I am a student at Gressenheller University. Professor Hershel Layton is my archaeology teacher. Although to be fair, he doesn't show up to class all that much... The thing is, last time he came by I suggested a theme for my homework about 'Digital Archaeology', and he seemed to be into it, so we decided to work together on it. Of course, I'll be leading the analysis since he's probably out there dealing with deadly reliqs, time travel or ancient civilizations. You know how he is, he can't leave any puzzle unsolved. -> Anyway, he might pop up sometime with a puzzle or something.")
