@@ -185,6 +185,8 @@
   }
 }
 
+
+
 .coin { 
   position: absolute; 
   z-index: 9999; 
@@ -213,7 +215,7 @@
     
   }
 
-  .coinAmountDissapear{
+  .disappearAnimation{
     animation: dissapear 1s;
   }
   
@@ -237,6 +239,7 @@
     align-items: center;
     justify-content: center;
     width: 300px;
+    animation: appear 1s;
   }
   
   .characterName{
@@ -281,12 +284,14 @@
   }
   
   p.dialogueText{
+    /* text-align: justify; */
     min-height: 48px;
     font-size: 10pt;
     margin-bottom: 15px;
   }
 
   .dialogueText{
+    font-family: monospace;
     color: black;
     position: absolute;
     width: 90%;
