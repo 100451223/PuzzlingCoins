@@ -84,7 +84,7 @@ function _fadeScreen(canvas){
         Array.from(document.getElementsByClassName("blackScreen")).forEach((blackScreen) => {
             blackScreen.remove();
         });
-    }, 6000);
+    }, 3000);
     
 }
 
