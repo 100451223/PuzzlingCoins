@@ -1,0 +1,124 @@
+@keyframes fadeOut{
+    0% {
+        opacity: 0;
+    } 30% {
+        opacity: 1;
+    } 70% {
+        opacity: 1;
+    } 100% {
+        opacity: 0;
+    }
+}
+
+@keyframes slideUp{
+    0% {
+        transform: translateY(-50%);
+    } 100% {
+        transform: translateY(calc(0% + 10px));
+    }
+}
+
+@keyframes slideDown{
+    0% {
+        transform: translateY(50%);
+    } 100% {
+        transform: translateY(calc(0% - 10px));
+    }
+}
+
+.puzzleCanvas{
+    all: initial;
+    position: fixed;
+    top: 0;
+    z-index: 9999;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.halfScreenFlex {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 450px;
+    height:300px;
+    border: 5px solid rgb(115, 33, 33); 
+    border-radius: 15px;  
+}
+
+#upperScreen{
+    background-color: red;
+    transform: translateY(50%);
+}
+
+#upperScreen h1 {
+    margin: 0px;
+    font-size: 3em;
+}
+
+#upperScreen h3 {
+    margin: 5px;
+}
+
+#lowerScreen{
+    background-color: blue;
+    transform: translateY(-50%);
+}
+
+#lowerScreen:hover {
+    cursor: pointer;
+}
+
+.puzzleTitleNumber{
+    color: white;
+}
+
+.blackScreen {
+
+    z-index: 10;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    animation: fadeOut 3s linear forwards;
+    border-radius: 15px;
+}
+
+.leftButtons {
+    position:absolute;
+    display: inline-flex;
+    column-gap: 10px;
+    left:10px;
+    bottom: 0px;
+}
+
+.rightButtons {
+    position: absolute;
+    background-color: brown;
+    right:10px;
+    bottom: 0px;
+}
+
+.puzzleButton {
+    z-index: 10;
+    width: 75px;
+    height: 30px;
+    background-color: rgb(0, 104, 202);
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    visibility: hidden;
+}
+
+.puzzle001Img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.puzzle001Img:hover{
+    cursor: pointer;
+}

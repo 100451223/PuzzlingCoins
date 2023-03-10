@@ -16,22 +16,13 @@
       "images/coin.png",
       "images/coin-hd.png",
       "audio/coin.mp3",
-      "images/wealth/001_030.png",
-      "images/wealth/031_050.png",
-      "images/wealth/051_080.png",
-      "images/wealth/081_150.png",
-      "images/wealth/151_229.png",
-      "images/wealth/230_inf.png",
-      "images/characters/ether/idle_ClosedMouth.png",
-      "images/characters/ether/idle_OpenMouth.png",
-      "images/characters/ether/sweat_ClosedMouth.png",
-      "images/characters/ether/sweat_OpenMouth.png",
-      "images/characters/ether/sigh_ClosedMouth.png",
-      "images/characters/ether/sigh_OpenMouth.png",
-      "images/characters/ether/angry_ClosedMouth.png",
-      "images/characters/ether/angry_OpenMouth.png",
+      "images/wealth/*.png",
+      "images/characters/ether/*.png",
       "images/characters/ether/shadow.PNG",
-      "images/dialogueBox.png"
+      "images/dialogueBox.png",
+      "images/puzzles/puzzle001/*.png",
+      "images/blackScreen.png",
+      "fonts/righteous.ttf"
     ],
     "background": {
       "scripts": ["scripts/jquery-3.6.3.min.js"],
@@ -39,8 +30,8 @@
     }, 
     "content_scripts": [
     {
-        "css": ["styles/style.css"],
-        "js": ["scripts/jquery-3.6.3.min.js", "scripts/utilities.js", "scripts/characterAnimation.js", "scripts/content.js"],
+        "css": ["styles/puzzles.css", "styles/style.css"],
+        "js": ["scripts/jquery-3.6.3.min.js", "scripts/puzzles.js", "scripts/utilities.js", "scripts/characterAnimation.js", "scripts/content.js"],
         "matches": ["https://*/*"]
     }
     ]
