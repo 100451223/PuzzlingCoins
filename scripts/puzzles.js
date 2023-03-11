@@ -135,18 +135,15 @@ function _createPuzzleCanvas(number, name, picarats){
 function startPuzzle(number, name, picarats){
 
     _createPuzzleCanvas(number, name, picarats).then((canvas) => {
-        setTimeout(() => {
+
+        canvas.querySelector("#lowerScreen").addEventListener("click", (event) => {
             _fadeScreen(canvas);
-
-            /* Puzzle sinopsis */
-
-
-            /* Puzzle behaviour */
 
             setTimeout(() => {
                 aSilentMelody(canvas);
             }, 1000);
-        }, 5000);
+
+        }, {once : true});
     });
 
 }
@@ -166,6 +163,52 @@ function _001createImageElement(className, id){
 
 }
 
+function _createRotateButton(images){
+
+    let rotateButton = document.createElement("img");
+    rotateButton.src = chrome.extension.getURL("../images/puzzles/puzzle001/rotateButton.png");
+    rotateButton.className = "rotateButton";
+
+    rotateButton.addEventListener("click", () => {
+        let currentImage = images.find((image) => image.style.visibility == "visible");
+        
+        switch(currentImage.id){
+            case "frontImage":
+                images[0].style.visibility = "hidden";
+                images[1].style.visibility = "visible";
+                break;
+            case "leftImage":
+                images[1].style.visibility = "hidden";
+                images[3].style.visibility = "visible";
+                break;
+            case "backImage":
+                images[3].style.visibility = "hidden";
+                images[2].style.visibility = "visible";
+                break;
+            case "rightImage":
+                images[2].style.visibility = "hidden";
+                images[0].style.visibility = "visible";
+                break;
+        }
+
+        if(currentSelection!=null){
+            currentSelection.remove();
+            currentSelection = null;
+        }
+    });
+
+    return rotateButton;
+}
+
+function _createSelection(){
+    let selection = document.createElement("img");
+    selection.src = chrome.extension.getURL("../images/puzzles/puzzle001/selection.png");
+    selection.className = "selection";
+    return selection;
+}
+
+let currentSelection = null;
+
 function aSilentMelody(canvas){
 
     let upperScreen = canvas.querySelector("#upperScreen")
@@ -175,38 +218,29 @@ function aSilentMelody(canvas){
 
     let images = [
         _001createImageElement("puzzle001", "frontImage"),
-        _001createImageElement("puzzle001", "rightImage"),
         _001createImageElement("puzzle001", "leftImage"),
+        _001createImageElement("puzzle001", "rightImage"),
         _001createImageElement("puzzle001", "backImage")
     ]
 
     images[0].style.visibility = "visible";
-
     images.forEach((image) => {
         lowerScreen.appendChild(image);
-        image.addEventListener("click", (e) => {
-            switch(e.target.id){
-                case "frontImage":
-                    images[0].style.visibility = "hidden";
-                    images[1].style.visibility = "visible";
-                    break;
-                case "rightImage":
-                    images[1].style.visibility = "hidden";
-                    images[3].style.visibility = "visible";
-                    break;
-                case "backImage":
-                    images[3].style.visibility = "hidden";
-                    images[2].style.visibility = "visible";
-                    break;
-                case "leftImage":
-                    images[2].style.visibility = "hidden";
-                    images[0].style.visibility = "visible";
-                    break;
+
+        image.addEventListener("click", (event) => {
+            if (currentSelection!=null){
+                currentSelection.remove();
             }
-            console.log("Mouse coords: ", e.clientX, e.clientY);
+            currentSelection = _createSelection();
+            currentSelection.style.left = event.offsetX - 12 + "px";
+            currentSelection.style.top = event.offsetY - 12 + "px";
+            lowerScreen.appendChild(currentSelection);
         });
     });
 
+    // Create rotate button
+    let rotateButton = _createRotateButton(images);
+    lowerScreen.appendChild(rotateButton);
 }
 
 startPuzzle("PUZZLE 001", "A Silent Melody", "15 PICARATS");
