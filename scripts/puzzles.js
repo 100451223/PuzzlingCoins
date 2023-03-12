@@ -44,10 +44,12 @@ function _createLeftButtons(){
     
         let hintsButton = document.createElement("button");
         hintsButton.className = "puzzleButton";
+        hintsButton.id = "hintsButton";
         hintsButton.innerHTML = "HINTS";
     
         let outButton = document.createElement("button");
         outButton.className = "puzzleButton";
+        outButton.id = "outButton";
         outButton.innerHTML = "EXIT";
     
         leftButtons.appendChild(hintsButton);
@@ -62,6 +64,7 @@ function _createRightButton(){
         
     let rightButton = document.createElement("button");
     rightButton.className = "rightButtons puzzleButton";
+    rightButton.id = "submitButton";
     rightButton.innerHTML = "SUBMIT";
     
     return rightButton;
@@ -130,6 +133,14 @@ function _createPuzzleCanvas(number, name, picarats){
 
 }
 
+function _showLowerButtons(canvas){
+    /* Show the lower buttons */
+
+    Array.from(canvas.querySelectorAll(".puzzleButton")).forEach((button) => {
+        button.style.visibility = "visible";
+    });
+
+}
 
 
 function startPuzzle(number, name, picarats){
@@ -140,6 +151,7 @@ function startPuzzle(number, name, picarats){
             _fadeScreen(canvas);
 
             setTimeout(() => {
+                _showLowerButtons(canvas);
                 aSilentMelody(canvas);
             }, 1000);
 
@@ -149,6 +161,7 @@ function startPuzzle(number, name, picarats){
 }
 
 function _001createImageElement(className, id){
+    // Create an image from puzzle 'className' from image 'classname/id.png'
 
     let image = document.createElement("img");
     image.className = className + "Img";
@@ -164,6 +177,7 @@ function _001createImageElement(className, id){
 }
 
 function _createRotateButton(images){
+    // Create a rotate button to rotate the guitar
 
     let rotateButton = document.createElement("img");
     rotateButton.src = chrome.extension.getURL("../images/puzzles/puzzle001/rotateButton.png");
@@ -201,6 +215,8 @@ function _createRotateButton(images){
 }
 
 function _createSelection(){
+    // Create a circle selection element 
+
     let selection = document.createElement("img");
     selection.src = chrome.extension.getURL("../images/puzzles/puzzle001/selection.png");
     selection.className = "selection";
@@ -210,6 +226,7 @@ function _createSelection(){
 let currentSelection = null;
 
 function aSilentMelody(canvas){
+    // Puzzle 001: A Silent Melody
 
     let upperScreen = canvas.querySelector("#upperScreen")
     let lowerScreen = canvas.querySelector("#lowerScreen")
@@ -244,4 +261,3 @@ function aSilentMelody(canvas){
 }
 
 startPuzzle("PUZZLE 001", "A Silent Melody", "15 PICARATS");
-//createPuzzleCanvas();
