@@ -140,6 +140,12 @@
     background-color: #5d1f00;
 }
 
+.puzzleStatement {
+    padding: 20px;
+    text-align: justify;
+}
+
+
 .puzzle001Img{
     width: 100%;
     height: 100%;

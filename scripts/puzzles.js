@@ -142,6 +142,38 @@ function _showLowerButtons(canvas){
 
 }
 
+function _writePuzzleStatement(canvas, puzzleStatementText){
+    /* Show the puzzle statement */
+
+    let upperScreen = canvas.querySelector("#upperScreen");
+    // Delete the puzzle title and number, but not the other things
+    Array.from(upperScreen.children).forEach((child) => {
+        if (child.className != "blackScreen"){
+            child.remove();
+        }
+    });
+
+
+    let puzzleStatement = document.createElement("p");
+    puzzleStatement.className = "puzzleStatement";
+
+    upperScreen.appendChild(puzzleStatement);
+    writeText(puzzleStatementText, "puzzleStatement", false)
+
+}
+
+function _showPuzzleStatement(canvas, puzzleNumber){
+
+    let puzzleJSON;
+
+    fetch(chrome.runtime.getURL(`../scripts/puzzles/${puzzleNumber}.json`))
+        .then(response => response.json())
+        .then(jsonData => {
+            puzzleJSON = jsonData;
+            _writePuzzleStatement(canvas, puzzleJSON["description"]);
+    });
+
+}
 
 function startPuzzle(number, name, picarats){
 
@@ -151,6 +183,10 @@ function startPuzzle(number, name, picarats){
             _fadeScreen(canvas);
 
             setTimeout(() => {
+
+                let puzzleNumberFormated = number.split(" ").join("").toLowerCase();
+                _showPuzzleStatement(canvas, puzzleNumberFormated);
+
                 _showLowerButtons(canvas);
                 aSilentMelody(canvas);
             }, 1000);
@@ -159,6 +195,11 @@ function startPuzzle(number, name, picarats){
     });
 
 }
+
+
+
+
+/* PUZZLE 001 */
 
 function _001createImageElement(className, id){
     // Create an image from puzzle 'className' from image 'classname/id.png'

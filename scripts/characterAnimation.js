@@ -170,10 +170,10 @@ function divideComment(text){
         
 }
 
-function writeText(text){
+function writeText(text, textBoxElementClass, isCharacter=true){
     /* Writes the text "text" in the dialogue box */
 
-    let textBox = document.getElementsByClassName("dialogueText")[0];
+    let textBox = document.getElementsByClassName(textBoxElementClass)[0];
     let currentlyAt = 0;
     currentlyWritingText = true;
 
@@ -190,17 +190,21 @@ function writeText(text){
 
             if (currentlyAt > text.length || !currentlyWritingText) {
                 currentlyWritingText = false;
+                if(isCharacter){
+                    shutTheCharacterUp();
+                }
                 window.cancelAnimationFrame(animationFrame);
-                shutTheCharacterUp();
                 return;
             }
 
             if (fastWrite){
                 currentlyWritingText = false;
+                if(isCharacter){
+                    shutTheCharacterUp();         
+                }
                 window.cancelAnimationFrame(animationFrame);
                 textBox.innerText = text;
                 fastWrite = false;
-                shutTheCharacterUp();                
                 return;
             }
         }
@@ -249,7 +253,7 @@ function showDialogue(character, position, text){
 
         // Create the sprite and write the first comment right away
         createCharacterSprite(character, comments[0]);
-        writeText(comments[0]);
+        writeText(comments[0], "dialogueText");
         if(talkIntervalId != null){
             clearInterval(talkIntervalId);
             talkIntervalId = null;
@@ -264,7 +268,7 @@ function showDialogue(character, position, text){
                     fastWrite = true;
                 } else {
                     currentComment++;
-                    writeText(comments[currentComment-1]);
+                    writeText(comments[currentComment-1], "dialogueText");
                     if(talkIntervalId != null){
                         clearInterval(talkIntervalId);
                         talkIntervalId = null;
@@ -294,20 +298,12 @@ let dialog1 = ["ether", "left", "Hey! Hello there! Can you hear (or maybe read) 
 let dialog2 = ["ether", "left", "What? <sigh> Why am I here? Ah, it's because you solved *the* puzzle! -> You know, I spent so much time crafting it in hopes of finding someone smart enough to solve it... and you did! That's why... I NEED YOUR HELP!"]
 let dialog3 = ["ether", "left", "What I'm about to tell you is very important. -> The fate of the world is at stake here! So, I need to know beforehand... -> you, who solved the second hardest puzzle in the world, would you like to help solve the #1 biggest puzzle in the world... The truth about the Internet!"]
 
-/* This is the dialogue structure, IF you don't like it I COULDN'T CARE LESS 
+/* This is the dialogue structure, IF you don't like it I COULDN'T CARE LESS */
 
-showDialogue(...dialog1).then(() => {
-    showDialogue(...dialog2).then(() => {
-        showDialogue(...dialog3);
-    })
-})
-
-*/
-
-// showDialogue("ether", "left", "Chaaand hello. He resucitado al tercer día, como cierto hippie. Como son las 0 y pico, en lugar de 37 mensajes, te mando 3 minutos de vídeo o lo que salga <sweat>").then(() => {
-//     showDialogue("ether", "left", "Por cierto, <sigh> la aplicación nunca funcionará en metro, <sigh>así que es futil intentarlo por el gps y tal... -> Pero bueno, ya la entregué y creo que me salió bastante guay JAJA. Aunque la app que había que usar para coger la ubicación es un poco CACA").then(() => {
-//         showDialogue("ether", "left", "La verdad es que mañana tengo clase y debería irme a dormir. PERO NO QUIERO <sigh> -> Respecto a lo de la tablet, supongo que ahí lo mejor sería probarlo tu misma, rollo ir a la tienda en persona. -> Yo solo he probado la Surface de Raúl, y va bastante bien, aunque claro, <sigh> te tienes que comprar el lápiz aparte y la surface de por sí no es barata <sigh> -> Pero hay otras marcas, así que eso es mirarlo").then(() => {
-//             showDialogue("ether", "left", "Also, que estáis viendo Gru, pues muy bien. -> <angry> Se que es impopular pero vivan los minions. -> Y sisi, oblígale a ver la peli esta de Shin Chan del vampiro muerde culos. Y si no está, pues cualquiera de las anteriores, porque son todas icónicas. -> BTW este al que estoy suplantando es Ether Netts (jocoso chiste informático) y es el prota de mi extensión de Chrome -> Y bueno, eso es todo por hoy. Buenas nocheeees -> ¡Ah! Y suerte con el examen del miércoles que seguro que te sale genial!!");
-//         })
+// showDialogue(...dialog1).then(() => {
+//     showDialogue(...dialog2).then(() => {
+//         showDialogue(...dialog3);
 //     })
 // })
+
+

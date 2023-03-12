@@ -19,9 +19,10 @@
       "images/wealth/*.png",
       "images/characters/ether/*",
       "images/dialogueBox.png",
-      "images/puzzles/puzzle001/*.png",
+      "images/puzzles/*",
       "images/blackScreen.png",
-      "fonts/righteous.ttf"
+      "fonts/righteous.ttf",
+      "scripts/puzzles/puzzle001.json"
     ],
     "background": {
       "scripts": ["scripts/jquery-3.6.3.min.js"],
