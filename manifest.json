@@ -1,7 +1,7 @@
 {
-    "name": "Tales of Gressenheller: The Net Woven in Mystery",
+    "name": "Tales of Gressenheller: Nodes & Secrets",
     "version": "1.0",
-    "description": "Find the coins hidden in the page",
+    "description": "Find a path to the truth!",
     "manifest_version": 2,
     "incognito": "split",
     "icons": {
@@ -22,7 +22,10 @@
       "images/puzzles/*",
       "images/blackScreen.png",
       "fonts/righteous.ttf",
-      "scripts/puzzles/puzzle001.json"
+      "scripts/puzzles/puzzle001.json",
+      "images/puzzles/PuzzleDescriptionBackground.png",
+      "images/puzzles/PuzzlePicaratsBG.png",
+      "images/puzzles/PuzzleTitleBG.png"
     ],
     "background": {
       "scripts": ["scripts/jquery-3.6.3.min.js"],
