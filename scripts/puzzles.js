@@ -1,11 +1,17 @@
+let config = {
+    "lang": "es"
+}
+
 class Puzzle {
     constructor(number, puzzleHandler){
         this.number      = number;
         this.name        = "";
         this.picarats    = "";
         this.description = "";
+        this.solution    = "";
         this.leftButtons = this._createLeftButtons();
         this.submitButton= this._createRightButton();
+        this.blackScreen = {"upper": null, "lower": null},
         this.deductionImg= [];
         this.upperScreen = null;
         this.lowerScreen = null;
@@ -13,14 +19,42 @@ class Puzzle {
         this.exitButton  = null;
         this.canvas      = null;
         this.puzzleObject= puzzleHandler;
-        this.puzzleAudio = this.addPuzzleAudio();;
+        this.puzzleAudio = this.addPuzzleAudio();
+        this.RightWrongImg = this._createResultImages();
 
         this.submitButton.addEventListener("click", this._submissionHandler);
     }
 
-    _displayDeductionImages = (fate) => {
+    _createResultImages = () => {
+        // Create the images for CORRECT! and INCORRECT! results
 
-        // Create
+        let result = {"right": null, "wrong": null}   
+        
+        let right = document.createElement("img");
+        right.src = chrome.extension.getURL(`../images/deduction/correct_${config.lang}.png`);
+        right.className = "resultImg";
+
+        let wrong = document.createElement("img");
+        wrong.src = chrome.extension.getURL(`../images/deduction/incorrect_${config.lang}.png`);
+        wrong.className = "resultImg";
+
+        result.right = right;
+        result.wrong = wrong;
+
+        return result;
+    }
+
+    _displayResult = (fate) => {
+        // Display the result of the puzzle: CORRECT! or INCORRECT!
+
+        let useResultImage = fate == "right"? this.RightWrongImg.right : this.RightWrongImg.wrong;
+        this.upperScreen.appendChild(useResultImage);
+    }
+
+    _createDeductionImages = (fate) => {
+        // Create the deduction images. For right ot wrong answer, depending on 'fate'
+
+        console.log("FATE", fate);
         for(let i=1; i<5; i++){
             let deductionImg = document.createElement("img");
             deductionImg.className = "deductionImg";
@@ -28,7 +62,15 @@ class Puzzle {
             deductionImg.src = chrome.extension.getURL(url);
             this.deductionImg.push(deductionImg);
         }
+
+    }
+
+    _displayDeductionImages = (fate) => {
+
+        // Create
+        this._createDeductionImages(fate);
         this.deductionImg[0].style.animationDelay = "1s";
+
         
         if (fate == "right"){
             this.puzzleAudio.src = chrome.runtime.getURL(`../audio/solvingJingles/puzzleSolved.mp3`);
@@ -41,31 +83,34 @@ class Puzzle {
             i++;
             image.addEventListener("animationend", () => {
                 this.lowerScreen.removeChild(image);
-                if (i>=4) return;
+                if (i>=4) {
+                    this._displayResult(fate);
+                    return;
+                };
                 setImageListener(this.deductionImg[i]);
             });
         }
 
+        // Start with the first image
         setImageListener(this.deductionImg[0]);
+        // The last image is longer
         this.deductionImg[3].style.animation = "fadeOutLong 2s linear forwards";
 
     }
 
     _submissionHandler = () => {
-        const fadeScreen = this._fadeScreen(true);
+        this._fadeScreen(true);
 
         if (this.puzzleObject.checkResult()){
-            fadeScreen.addEventListener("animationend", () => {
-                console.log("Correct!"); 
-                this._displayDeductionImages("right");
-            });
+            console.log("Correct!"); 
+            this._displayDeductionImages("right");
         } else {
-            fadeScreen.addEventListener("animationend", () => {
-                console.log("Correct!"); 
-                this._displayDeductionImages("wrong");
-            });
+            console.log("Incorrect!"); 
+            this._displayDeductionImages("wrong");
         }
-    }   
+    }
+    
+    
 
     _getPuzzleInfo = async () => {
 
@@ -77,9 +122,10 @@ class Puzzle {
                 puzzleJSON = jsonData;
         });
 
-        this.name        = puzzleJSON["title"];
+        this.name        = puzzleJSON[`title_${config.lang}`];
         this.picarats    = puzzleJSON["picarats"];
-        this.description = puzzleJSON["description"];
+        this.description = puzzleJSON[`description_${config.lang}`];
+        this.solution    = puzzleJSON[`solution_${config.lang}`];
 
         return puzzleJSON;
         
@@ -211,25 +257,34 @@ class Puzzle {
         /* Dummy black screen */
         let blackScreen = document.createElement("img");
         blackScreen.src = chrome.extension.getURL("../images/blackScreen.png");
-        
         blackScreen.className = "blackScreen";
-    
-        
-        if (!hold){
-            blackScreen.style.animation = "fadeOut 3s ease-in-out forwards";
-            setTimeout(() => {
-                Array.from(document.getElementsByClassName("blackScreen")).forEach((blackScreen) => {
-                    blackScreen.remove();
-                });
-            }, 3000);
-        } else {
-            blackScreen.style.animation = "fadeIn 1.5s ease-in-out forwards";
-        }
-        
-        this.lowerScreen.appendChild(blackScreen);
-        this.upperScreen.appendChild(blackScreen.cloneNode(true));
 
-        return blackScreen;
+        // /* Fade in the black screen */
+        blackScreen.style.animation = "simpleFadeIn 1s ease-in-out forwards"
+
+        // Clone the black screen for the lower screen
+        this.blackScreen.upper = blackScreen;
+        this.blackScreen.lower = blackScreen.cloneNode(true);
+
+        // If hold is true, the black screen will not fade out
+        
+        this.blackScreen.upper.addEventListener("animationend", () => {
+            if(!hold){
+                this.blackScreen.upper.style.animation = "simpleFadeOut 1s ease-in-out forwards";
+                this.blackScreen.upper.addEventListener("animationend", () => this.blackScreen.upper.remove());
+            }
+        });
+
+        this.blackScreen.lower.addEventListener("animationend", () => {
+            if(!hold){
+                this.blackScreen.lower.style.animation = "simpleFadeOut 1s ease-in-out forwards";
+                this.blackScreen.lower.addEventListener("animationend", () => this.blackScreen.lower.remove());
+            }
+        });
+                        
+        this.upperScreen.appendChild(this.blackScreen.upper);
+        this.lowerScreen.appendChild(this.blackScreen.lower);
+
     }
 
     _writePuzzleStatement = (puzzleStatementText) => {
@@ -254,6 +309,7 @@ class Puzzle {
         writeText(puzzleStatementText, "puzzleStatement", false)
     
     }
+
 
     startPuzzle = async () => {
 
