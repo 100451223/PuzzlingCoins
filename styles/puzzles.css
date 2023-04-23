@@ -10,6 +10,18 @@
     }
 }
 
+@keyframes fadeOutLong{
+    0% {
+        opacity: 0;
+    } 15% {
+        opacity: 1;
+    } 85% {
+        opacity: 1;
+    } 100% {
+        opacity: 0;
+    }
+}
+
 @keyframes fadeIn{
     0% {
         opacity: 0;
@@ -204,4 +216,14 @@
     z-index: 11;
     width: 25px;
     height: 25px;
+}
+
+.deductionImg {
+    position: fixed;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    z-index: 20;
+    opacity: 0;
+    animation: fadeOut 0.5s linear forwards;
 }

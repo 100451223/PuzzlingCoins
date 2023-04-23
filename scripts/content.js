@@ -4,9 +4,6 @@ const n = 10; // Number of coins to drop
 // Add an audio element
 let audio = addCoinAudio();
 
-
-
-
 initialSetUp()
 const clickableItems = getClickableItems();
 

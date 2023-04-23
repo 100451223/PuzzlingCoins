@@ -6,23 +6,64 @@ class Puzzle {
         this.description = "";
         this.leftButtons = this._createLeftButtons();
         this.submitButton= this._createRightButton();
+        this.deductionImg= [];
         this.upperScreen = null;
         this.lowerScreen = null;
         this.hintsButton = null;
         this.exitButton  = null;
         this.canvas      = null;
         this.puzzleObject= puzzleHandler;
+        this.puzzleAudio = this.addPuzzleAudio();;
 
         this.submitButton.addEventListener("click", this._submissionHandler);
     }
 
+    _displayDeductionImages = (fate) => {
+
+        // Create
+        for(let i=1; i<5; i++){
+            let deductionImg = document.createElement("img");
+            deductionImg.className = "deductionImg";
+            let url = i>=3? `../images/deduction/deduction${i}_${fate}.png` : `../images/deduction/deduction${i}.png`;
+            deductionImg.src = chrome.extension.getURL(url);
+            this.deductionImg.push(deductionImg);
+        }
+        this.deductionImg[0].style.animationDelay = "1s";
+        
+        if (fate == "right"){
+            this.puzzleAudio.src = chrome.runtime.getURL(`../audio/solvingJingles/puzzleSolved.mp3`);
+            this.puzzleAudio.play();
+        }
+        // Display
+        let i = 0;
+        const setImageListener = (image) => {
+            this.lowerScreen.appendChild(image);
+            i++;
+            image.addEventListener("animationend", () => {
+                this.lowerScreen.removeChild(image);
+                if (i>=4) return;
+                setImageListener(this.deductionImg[i]);
+            });
+        }
+
+        setImageListener(this.deductionImg[0]);
+        this.deductionImg[3].style.animation = "fadeOutLong 2s linear forwards";
+
+    }
+
     _submissionHandler = () => {
-        this._fadeScreen(true);
+        const fadeScreen = this._fadeScreen(true);
 
         if (this.puzzleObject.checkResult()){
-            console.log("Correct!");
+            fadeScreen.addEventListener("animationend", () => {
+                console.log("Correct!"); 
+                this._displayDeductionImages("right");
+            });
         } else {
-            console.log("Incorrect!");
+            fadeScreen.addEventListener("animationend", () => {
+                console.log("Correct!"); 
+                this._displayDeductionImages("wrong");
+            });
         }
     }   
 
@@ -187,6 +228,8 @@ class Puzzle {
         
         this.lowerScreen.appendChild(blackScreen);
         this.upperScreen.appendChild(blackScreen.cloneNode(true));
+
+        return blackScreen;
     }
 
     _writePuzzleStatement = (puzzleStatementText) => {
@@ -222,140 +265,30 @@ class Puzzle {
 
             setTimeout(() => {
                 this._writePuzzleStatement(this.description);
-
                 this._showLowerButtons();
+
                 this.puzzleObject.startPuzzle001(this.lowerScreen);
             }, 1000);
 
         }, {once : true});
     
     }
+
+    addPuzzleAudio = () => {
+        /* Add an audio element to the page; it will only play the coin sound */
+    
+        let audio = document.createElement("audio");
+        audio.id = "puzzle-audio";
+        document.body.appendChild(audio);
+        return audio
+    }
     
 
-}
-
-// PUZZLE 001
-
-class ASilentMelody {
-
-    constructor(){
-        this.id = "001";
-        this.lowerScreen = null;
-        this.result = null;
-        this.images = [
-            this._001createImageElement("001", "frontImage"),
-            this._001createImageElement("001", "leftImage"),
-            this._001createImageElement("001", "rightImage"),
-            this._001createImageElement("001", "backImage")
-        ];
-        this.rotateButton = this._createRotateButton();
-        this.currentImage = null;
-        this.currentSelection = null;
-
-        this.rotateButton.addEventListener("click", this._rotateImage);
-    }
-    
-    _001createImageElement(puzzleId, imageId) {
-        // Create an image from puzzle #puzzleId with imageId as the source
-    
-        let image = document.createElement("img");
-        image.className = `puzzle${puzzleId}Img`;
-        image.id = imageId;
-        image.src = chrome.extension.getURL("../images/puzzles/" + `puzzle${puzzleId}` + "/" + imageId + ".png");
-        
-        return image;
-    
-    }
-    
-    _createRotateButton = () => {
-        // Create a rotate button to rotate the guitar
-    
-        let rotateButton = document.createElement("img");
-        rotateButton.src = chrome.extension.getURL("../images/puzzles/puzzle001/rotateButton.png");
-        rotateButton.className = "rotateButton";
-        return rotateButton;
-    }
-
-    _rotateImage = () => {
-        // Find the visible image and set it as the current one
-        this.currentImage = this.images.find((image) => image.style.visibility == "visible");
-        
-        switch(this.currentImage.id){
-            case "frontImage":
-                this.images[0].style.visibility = "hidden";
-                this.images[1].style.visibility = "visible";
-                break;
-            case "leftImage":
-                this.images[1].style.visibility = "hidden";
-                this.images[3].style.visibility = "visible";
-                break;
-            case "backImage":
-                this.images[3].style.visibility = "hidden";
-                this.images[2].style.visibility = "visible";
-                break;
-            case "rightImage":
-                this.images[2].style.visibility = "hidden";
-                this.images[0].style.visibility = "visible";
-                break;
-        }
-
-        // Remove the selection circle if it exists
-        if(this.currentSelection!=null){
-            this.currentSelection.remove();
-            this.currentSelection = null;
-        }
-    }
-
-    _createSelection = () => {
-        // Create a circle selection element 
-    
-        let selection = document.createElement("img");
-        selection.src = chrome.extension.getURL("../images/puzzles/puzzle001/selection.png");
-        selection.className = "selection";
-        return selection;
-    }
-
-    _appendSelection = (event) => {
-        // Append a selection circle to the lower screen
-
-        if (this.currentSelection!=null) this.currentSelection.remove();
-
-        this.currentSelection = this._createSelection();
-        this.currentSelection.style.left = event.offsetX - 12 + "px";
-        this.currentSelection.style.top = event.offsetY - 12 + "px";
-        this.result = [event.offsetX, event.offsetY];
-        
-        this.lowerScreen.appendChild(this.currentSelection);
-    }
-
-    startPuzzle001 = (lowerScreen) => {
-
-        this.lowerScreen = lowerScreen;
-        // Set the first image (front view) as visible
-        this.images[0].style.visibility = "visible";
-        // Add the rotate button to the upper screen
-        this.lowerScreen.appendChild(this.rotateButton);
-        // Add the images to the lower screen
-        this.images.forEach((image) => {
-            // Add the image to the lower screen
-            this.lowerScreen.appendChild(image);
-            // Show the selection circle and save the result
-            image.addEventListener("click", this._appendSelection);
-        });
-           
-    }
-
-    _checkResultRange = (userSubission, correctResult, offset) => {
-        // Check if the user submit is in a correct range
-        return userSubission<=(correctResult+offset) && userSubission>=(correctResult-offset)
-    }
-
-    checkResult = () => {
-        return this._checkResultRange(this.result[0], 280, 10) && this._checkResultRange(this.result[1], 230, 10)
-    }
 }
 
 // MAIN
 asm = new ASilentMelody();
+
 pzl = new Puzzle("001", asm);
+
 pzl.startPuzzle();
