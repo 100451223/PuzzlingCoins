@@ -256,3 +256,25 @@
     opacity: 0;
     animation: simpleFadeIn 3s linear forwards;
 }
+
+.lowerScreenCover {
+    position: fixed;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    z-index: 20;
+}
+
+.deductionImg {
+    opacity: 0;
+    animation: fadeOut 0.5s linear forwards;
+}
+
+.resultImg {
+    opacity: 0;
+    animation: simpleFadeIn 3s linear forwards;
+}
+
+.puzzleContainer {
+    z-index: 10;
+}

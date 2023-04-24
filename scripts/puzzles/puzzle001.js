@@ -90,9 +90,9 @@ class ASilentMelody {
         this.lowerScreen.appendChild(this.currentSelection);
     }
 
-    startPuzzle001 = (lowerScreen) => {
+    startPuzzle001 = () => {
 
-        this.lowerScreen = lowerScreen;
+        this.lowerScreen = document.createElement("div");
         // Set the first image (front view) as visible
         this.images[0].style.visibility = "visible";
         // Add the rotate button to the upper screen
@@ -105,6 +105,7 @@ class ASilentMelody {
             image.addEventListener("click", this._appendSelectionCircle);
         });
            
+        return this.lowerScreen;
     }
 
     _checkResultRange = (userSubission, correctResult, offset) => {

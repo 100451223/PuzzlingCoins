@@ -1,6 +1,6 @@
 /* Global Variables */
 
-const maxCharactersPerLine = 37; // these are actually 36 characters + 1 space
+const maxCharactersPerLine = 35; // these are actually 36 characters + 1 space
 let dialogueShowing = false;
 let comments = [];
 let currentComment = 0;
@@ -112,12 +112,19 @@ function divideComment(text){
     for(let i=0; i<textWords.length; i++){
 
         if(i == textWords.length-1){
-            currentComentWords.push(textWords[i]);
-            comments.push(currentComentWords.join(" "));
-            continue;
-        }
+            if(currentLineLen + (textWords[i].length+1) <= maxCharactersPerLine){
+                currentComentWords.push(textWords[i]);
+                comments.push(currentComentWords.join(" "));
+                continue;
+            } else {
+                currentLine++;
+                comments.push(currentComentWords.join(" "));
+                comments.push(textWords[i]);
+                continue;
+            }
+        } 
         
-        if(currentLineLen + (textWords[i].length+1) <= maxCharactersPerLine || textWords[i] == "->" || textWords[i].match(regex) != null){
+        if(currentLineLen + (textWords[i].length+1) <= maxCharactersPerLine || textWords[i] == "->" || textWords[i].match(regex) != null ){
 
             if(textWords[i] != "->"){
                 currentComentWords.push(textWords[i]);
