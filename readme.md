@@ -1,6 +1,6 @@
 # [UNDER ACTIVE DEVELOPMENT]
 
-This project is in a very early stage of the development process. The current state of the project might not reflect the final result, thank you for your interest!
+This project is in a very early stage of the development process. The current state of the project might not reflect the final result. Thank you for your interest!
 
 # Solve puzzles to reach the truth in this Professor Layton inspired extension for web browsers!
 
