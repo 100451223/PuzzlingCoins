@@ -124,11 +124,11 @@
 }
 
 .puzzleTitleNumber{
+    visibility: hidden;
     color: white;
 }
 
 .blackScreen {
-
     z-index: 15;
     position: absolute;
     width: 100%;
@@ -138,6 +138,7 @@
 
 
 .leftButtons {
+    visibility: hidden;
     position:absolute;
     display: inline-flex;
     column-gap: 5px;
@@ -146,6 +147,7 @@
 }
 
 .rightButtons {
+    visibility: hidden;
     position: absolute;
     background-color: brown;
     right:10px;
@@ -162,7 +164,6 @@
     border: 2px solid white;
     border-bottom: 0px;
     color: white;
-    visibility: hidden;
 }
 
 
@@ -196,6 +197,7 @@
 }
 
 #picaratsCount {
+    visibility: hidden;
     animation: opacityHeartbeat 3s ease-in-out infinite;
     animation-delay: 2s;
 }

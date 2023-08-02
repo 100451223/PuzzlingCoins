@@ -301,16 +301,26 @@ function showDialogue(character, position, text){
 
 }
 
-let dialog1 = ["ether", "left", "Hey! Hello there! Can you hear (or maybe read) me? -> My name is Ether Netts, and I'm an archeology student at Gressenheller University. Not to brag, but my tutor is the famous Professor Hershel Layton, I asume you know exactly who I'm talking about."]
-let dialog2 = ["ether", "left", "What? <sigh> Why am I here? Ah, it's because you solved *the* puzzle! -> You know, I spent so much time crafting it in hopes of finding someone smart enough to solve it... and you did! That's why... I NEED YOUR HELP!"]
-let dialog3 = ["ether", "left", "What I'm about to tell you is very important. -> The fate of the world is at stake here! So, I need to know beforehand... -> you, who solved the second hardest puzzle in the world, would you like to help solve the #1 biggest puzzle in the world... The truth about the Internet!"]
+// let dialog1 = ["ether", "left", "Hey! Hello there! Can you hear (or maybe read) me? -> My name is Ether Netts, and I'm an archeology student at Gressenheller University. Not to brag, but my tutor is the famous Professor Hershel Layton, I asume you know exactly who I'm talking about, hehe."]
+// let dialog2 = ["ether", "left", "What? <sigh> Why am I here? Ah, it's because you solved *the* puzzle! -> You know, I spent so much time crafting it in hopes of finding someone smart enough to solve it... and you did! That's why... I NEED YOUR HELP!"]
+// let dialog3 = ["ether", "left", "What I'm about to tell you is very important. -> The fate of the world is at stake here! So, I need to know beforehand... -> you, who solved the second hardest puzzle in the world, would you like to help solve the #1 biggest puzzle in the world... The truth about the Internet!"]
+
+let dialog1 = ["ether", "left", "HEY! YOU, RANDOM INTERNET USER! Solve this puzzle! <angry> -> What do you mean *why*? <sigh> -> <idle> I am looking of a person capable of facing the hardest, toughest, most despair-inducing puzzles to unravel the biggest mystery in recent history! -> So, are you up to the challenge?"]
 
 /* This is the dialogue structure, IF you don't like it I COULDN'T CARE LESS */
 
 // showDialogue(...dialog1).then(() => {
 //     showDialogue(...dialog2).then(() => {
-//         showDialogue(...dialog3);
+//         showDialogue(...dialog3).then(() => {
+//             asm = new ASilentMelody();
+//             pzl = new Puzzle("001", asm);
+//             pzl.startPuzzle();
+//         })
 //     })
 // })
 
-
+showDialogue(...dialog1).then(() => {
+    asm = new ASilentMelody();
+    pzl = new Puzzle("001", asm);
+    pzl.startPuzzle();
+})

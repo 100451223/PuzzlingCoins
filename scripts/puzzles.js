@@ -9,16 +9,14 @@ class Puzzle {
         this.picarats       = "";
         this.description    = "";
         this.solution       = "";
+        this.buttons        = {"hints": null, "exit": null, "submit": null}; 
+        this.startMenu      = {"picarats": null, "title": null, "number": null};
         this.leftButtons    = this._createHintsExitButtons();
         this.submitButton   = this._createSubmitButton();
         this.blackScreen    = {"upper": null, "lower": null},
         this.deductionImg   = [];
         this.screens        = {"upperScreen": null, "lowerScreen": null}
-        this.upperScreen    = null;
-        this.lowerScreen    = null;
         this.puzzleContainer= null;
-        this.hintsButton    = null;
-        this.exitButton     = null;
         this.canvas         = null;
         this.puzzleObject   = puzzleHandler;
         this.puzzleAudio    = this._createPuzzleAudio();
@@ -38,13 +36,15 @@ class Puzzle {
         let puzzleNumber = document.createElement("h1");
         puzzleNumber.className = "puzzleTitleNumber";
         puzzleNumber.innerHTML = this.number;
+        this.startMenu.number = puzzleNumber;
         
         let puzzleTitle = document.createElement("h3");
         puzzleTitle.className = "puzzleTitleNumber";
         puzzleTitle.innerHTML = this.name;
+        this.startMenu.title = puzzleTitle;
         
-        upperScreen.appendChild(puzzleNumber);
-        upperScreen.appendChild(puzzleTitle);
+        upperScreen.appendChild(this.startMenu.number);
+        upperScreen.appendChild(this.startMenu.title);
         
         return upperScreen;
     }
@@ -61,33 +61,49 @@ class Puzzle {
         picaratsCount.className = "puzzleTitleNumber";
         picaratsCount.id = "picaratsCount"
         picaratsCount.innerHTML = this.picarats;
+
+        this.startMenu.picarats = picaratsCount;
         
-        lowerScreen.appendChild(picaratsCount);
+        lowerScreen.appendChild(this.startMenu.picarats);
         
         return lowerScreen;
         
     }
+
+    _createHintsButton = () => {
+        /* Create the hints button */
+
+        let hintsButton = document.createElement("button");
+        hintsButton.className = "puzzleButton";
+        hintsButton.id = "hintsButton";
+        hintsButton.innerHTML = "HINTS";
+
+        return hintsButton;
+    }
     
+    _createExitButton = () => {
+        /* Create the exit button */
+
+        let exitButton = document.createElement("button");
+        exitButton.className = "puzzleButton";
+        exitButton.id = "outButton";
+        exitButton.innerHTML = "EXIT";
+
+        return exitButton;
+    }
+
     _createHintsExitButtons = () => {
         /* Create the left lower buttons: Hints and Exit, there shall be NO NOTES */
         
         let leftButtons = document.createElement("div");
         leftButtons.className = "leftButtons";
+
+        console.log(this._createHintsButton())
+        this.buttons.hints = this._createHintsButton();
+        this.buttons.exit = this._createExitButton();
         
-        let hintsButton = document.createElement("button");
-        hintsButton.className = "puzzleButton";
-        hintsButton.id = "hintsButton";
-        hintsButton.innerHTML = "HINTS";
-        this.hintsButton = hintsButton;
-        
-        let outButton = document.createElement("button");
-        outButton.className = "puzzleButton";
-        outButton.id = "outButton";
-        outButton.innerHTML = "EXIT";
-        this.exitButton = outButton;
-        
-        leftButtons.appendChild(hintsButton);
-        leftButtons.appendChild(outButton);
+        leftButtons.appendChild(this.buttons.hints);
+        leftButtons.appendChild(this.buttons.exit);
         
         return leftButtons;
         
@@ -100,8 +116,8 @@ class Puzzle {
         submitButton.className = "rightButtons puzzleButton";
         submitButton.id = "submitButton";
         submitButton.innerHTML = "SUBMIT";
-        this.submitButton = submitButton;
-        
+        this.buttons.submit = submitButton;
+
         return submitButton;
         
     }
@@ -114,25 +130,25 @@ class Puzzle {
        
        await this._getPuzzleInfo();
        
-       this.upperScreen = this._createUpperScreen();
-       this.lowerScreen = this._createLowerScreen();
+       this.screens.upperScreen = this._createUpperScreen();
+       this.screens.lowerScreen = this._createLowerScreen();
        
        /* Canvas */
        let canvas = document.createElement("div");
        canvas.className = "puzzleCanvas";
        
-       this.lowerScreen.appendChild(this.leftButtons);
-       this.lowerScreen.appendChild(this.submitButton);
+       this.screens.lowerScreen.appendChild(this.leftButtons);
+       this.screens.lowerScreen.appendChild(this.submitButton);
        
-       canvas.appendChild(this.upperScreen);
-       canvas.appendChild(this.lowerScreen);
+       canvas.appendChild(this.screens.upperScreen);
+       canvas.appendChild(this.screens.lowerScreen);
        
        document.body.appendChild(canvas);
        this.canvas = canvas;
        
        setTimeout(() => {
-           this.upperScreen.style.animation = "slideDown 1s ease-in-out forwards";
-           this.lowerScreen.style.animation = "slideUp 1s ease-in-out forwards";
+           this.screens.upperScreen.style.animation = "slideDown 1s ease-in-out forwards";
+           this.screens.lowerScreen.style.animation = "slideUp 1s ease-in-out forwards";
         }, 1000);
         
     }
@@ -183,52 +199,77 @@ class Puzzle {
         // Display the result of the puzzle: CORRECT! or INCORRECT!
         
         let useResultImage = fate == "right"? this.RightWrongImg.right : this.RightWrongImg.wrong;
-        this.upperScreen.appendChild(useResultImage);
+        this.screens.upperScreen.appendChild(useResultImage);
     }
-    
-    _displayDeductionImages = (fate) => {
 
-        // Create
-        this._createDeductionImages(fate);
-        this.deductionImg[0].style.animationDelay = "1s";
-        
-        
+    _displayStartMenu = () => {
+        this.startMenu.picarats.style.visibility = "visible";
+        this.startMenu.title.style.visibility = "visible";
+        this.startMenu.number.style.visibility = "visible";
+    }
+
+    _hideStartMenu = () => {
+        this.startMenu.picarats.style.visibility = "hidden";
+        this.startMenu.title.style.visibility = "hidden";
+        this.startMenu.number.style.visibility = "hidden";
+    }
+
+    _displayPuzzleUI = () => {
+        this.leftButtons.style.visibility = "visible";
+        this.submitButton.style.visibility = "visible";
+    }
+
+    _hidePuzzleUI = () => {
+        this.leftButtons.style.visibility = "hidden";
+        this.submitButton.style.visibility = "hidden";
+    }
+
+    _playAudio = (fate) => {
         if (fate == "right"){
             this.puzzleAudio.src = chrome.runtime.getURL(`../audio/solvingJingles/puzzleSolved.mp3`);
             this.puzzleAudio.play();
-        }
-        // Display
-        let i = 0;
-        const setImageListener = (image) => {
-            this.lowerScreen.appendChild(image);
-            i++;
-            image.addEventListener("animationend", () => {
-                this.lowerScreen.removeChild(image);
-                if (i>=4) {
-                    this._displayResult(fate);
-                    return;
-                };
-                setImageListener(this.deductionImg[i]);
-            });
-        }
-        
-        // Start with the first image
-        setImageListener(this.deductionImg[0]);
-        // The last image is longer
-        this.deductionImg[3].style.animation = "fadeOutLong 2s linear forwards";
-        
+        } 
+        // else 
+        // {
+        //     this.puzzleAudio.src = chrome.runtime.getURL(`../audio/solvingJingles/puzzleNOTSolved.mp3`);
+        //     this.puzzleAudio.play();
+        // }
     }
     
-    
-    _displayLowerButtons = () => {
-        /* Show the lower buttons */
-        
-        
-        document.getElementById("hintsButton").style.visibility = "visible";
-        document.getElementById("outButton").style.visibility = "visible";
-        this.submitButton.style.visibility = "visible";
-        
+    _displayDeductionImages = async (fate) => {
+
+        return new Promise((resolve) => {
+
+            // Create
+            this._createDeductionImages(fate);
+            this.deductionImg[0].style.animationDelay = "1s";
+            
+            //Play audio
+            this._playAudio(fate);
+
+            // Display
+            let i = 0;
+            const setImageListener = (image) => {
+                this.screens.lowerScreen.appendChild(image);
+                i++;
+                image.addEventListener("animationend", () => {
+                    // console.log(image)
+                    this.screens.lowerScreen.removeChild(image);
+                    if (i>=4) {
+                        resolve();
+                        return;
+                    };
+                    setImageListener(this.deductionImg[i]);
+                });
+            }
+            
+            // Start with the first image
+            setImageListener(this.deductionImg[0]);
+            // The last image is longer
+            this.deductionImg[3].style.animation = "fadeOutLong 2s linear forwards";
+        });
     }
+    
     
     _displayFadeScreen = (hold) => {
         /* This fades whatever is on BOTH the upper and lower screens */
@@ -265,20 +306,20 @@ class Puzzle {
             }
         });
                         
-        this.upperScreen.appendChild(this.blackScreen.upper);
-        this.lowerScreen.appendChild(this.blackScreen.lower);
+        this.screens.upperScreen.appendChild(this.blackScreen.upper);
+        this.screens.lowerScreen.appendChild(this.blackScreen.lower);
 
     }
 
     _writePuzzleStatement = (puzzleStatementText) => {
         /* Show the puzzle statement */
     
-        this.upperScreen.style.backgroundImage = `url(${chrome.extension.getURL("../images/puzzles/PuzzleDescriptionBackground.png")})`;
-        this.upperScreen.style.backgroundSize = "cover";
-        this.upperScreen.style.backgroundColor = "transparent";
+        this.screens.upperScreen.style.backgroundImage = `url(${chrome.extension.getURL("../images/puzzles/PuzzleDescriptionBackground.png")})`;
+        this.screens.upperScreen.style.backgroundSize = "cover";
+        this.screens.upperScreen.style.backgroundColor = "transparent";
     
         // Delete the puzzle title and number, but not the other things
-        Array.from(this.upperScreen.children).forEach((child) => {
+        Array.from(this.screens.upperScreen.children).forEach((child) => {
             if (child.className != "blackScreen"){
                 child.remove();
             }
@@ -287,7 +328,7 @@ class Puzzle {
         let puzzleStatement = document.createElement("p");
         puzzleStatement.className = "puzzleStatement";
     
-        this.upperScreen.appendChild(puzzleStatement);
+        this.screens.upperScreen.appendChild(puzzleStatement);
         writeText(puzzleStatementText, "puzzleStatement", false)
     
     }
@@ -314,13 +355,15 @@ class Puzzle {
     startPuzzle = async () => {
 
         this.canvas = await this._createPuzzleCanvas();
+        this._displayStartMenu();
         
-        this.lowerScreen.addEventListener("click", () => {
+        this.screens.lowerScreen.addEventListener("click", () => {
+            setTimeout(() => this._hideStartMenu(), 1000)
             this._displayFadeScreen(false);
 
             setTimeout(() => {
                 this._writePuzzleStatement(this.description);
-                this._displayLowerButtons();
+                this._displayPuzzleUI();
                 this._addPuzzleLogicContainer();
             }, 1000);
 
@@ -335,8 +378,24 @@ class Puzzle {
         this.puzzleContainer = puzzleContainer;
 
         this.puzzleContainer.append(this.puzzleObject.startPuzzle001())
-        this.lowerScreen.appendChild(this.puzzleContainer);
+        this.screens.lowerScreen.appendChild(this.puzzleContainer);
     
+    }
+
+    _clearFadeScreen = () => {
+        if(this.blackScreen.upper){
+            this.blackScreen.upper.style.animation = "simpleFadeOut 3s ease-in-out forwards";
+            this.blackScreen.upper.addEventListener("animationend", () => {
+                this.blackScreen.upper.remove();
+            });
+        }
+
+        if(this.blackScreen.lower){
+            this.blackScreen.lower.style.animation = "simpleFadeOut 3s ease-in-out forwards";
+            this.blackScreen.lower.addEventListener("animationend", () => {
+                this.blackScreen.lower.remove();
+            });
+        }
     }
 
     _submissionHandler = () => {
@@ -348,19 +407,28 @@ class Puzzle {
         
         if (this.puzzleObject.checkResult()){
             console.log("Correct!"); 
-            this._displayDeductionImages("right");
+            this._displayDeductionImages("right").then(() => {
+                this._hidePuzzleUI();
+                this._displayResult("right");
+                this._clearFadeScreen();
+            });
+            
         } else {
             console.log("Incorrect!"); 
-            this._displayDeductionImages("wrong");
+            this._displayDeductionImages("wrong").then(() =>{
+                this._hidePuzzleUI();
+                this._displayResult("wrong");
+                this._clearFadeScreen();
+            });
         }
     }
     
 
 }
 
-// MAIN
-asm = new ASilentMelody();
+// // MAIN
+// asm = new ASilentMelody();
 
-pzl = new Puzzle("001", asm);
+// pzl = new Puzzle("001", asm);
 
-pzl.startPuzzle();
+// pzl.startPuzzle();
