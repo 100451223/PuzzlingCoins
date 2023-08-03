@@ -56,6 +56,8 @@ function createCharacterSprite(character){
     characterContainer.appendChild(characterImage);
 
     document.body.append(characterContainer);
+
+    return characterContainer;
 }
 
 /* Talk animations */
@@ -319,8 +321,8 @@ let dialog1 = ["ether", "left", "HEY! YOU, RANDOM INTERNET USER! Solve this puzz
 //     })
 // })
 
-showDialogue(...dialog1).then(() => {
-    asm = new ASilentMelody();
-    pzl = new Puzzle("001", asm);
-    pzl.startPuzzle();
-})
+// showDialogue(...dialog1).then(() => {
+//     asm = new ASilentMelody();
+//     pzl = new Puzzle("001", asm);
+//     pzl.startPuzzle();
+// })
