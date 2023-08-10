@@ -1,4 +1,4 @@
-class Animator {
+class SpriteAnimator {
 
     constructor(fps){
         this.animationFrame = null;

@@ -2,7 +2,6 @@ class CharacterManager{
     
     constructor(character){
         this.character = character;
-        this.animator = new Animator(8);
         
         // Img paths
         this.dialogBoxImgSrc = `../images/dialogueBox.png`;
@@ -10,12 +9,18 @@ class CharacterManager{
             initial: `../images/characters/${character}/idle_ClosedMouth.png`,
             path: `../images/characters/${character}/`,
         }
-
+        
         // Character HTML elements
+        this.textBox;
         this.characterElem = this._createCharacterSprite(character);
         this.characterSpriteImg = this.characterElem.children[1];
         
         // Character animation variables
+
+        this.spriteAnimator = new SpriteAnimator(8);
+        this.dialogAnimator = new DialogAnimator(this.textBox);
+        
+        
         this.emotionalBuffer = [];
     }
 
@@ -46,6 +51,7 @@ class CharacterManager{
         let dialogueText = document.createElement("p");
         dialogueText.className = "dialogueText";
         dialogueText.innerText = "";
+        this.textBox = dialogueText;
     
         let dialogueBoxImage = document.createElement("img");
         dialogueBoxImage.className = "dialogueBoxImage";
@@ -68,21 +74,22 @@ class CharacterManager{
     }
     
 
-    talk = (mouthSpeed) => {
+    talk = (mouthSpeed, text) => {
         /* Makes the character talk by changing the mouth image every "mouthSpeed" miliseconds for "talkTime" miliseconds.*/
     
         let emotion = this.emotionalBuffer.length == 0? "idle" : this.emotionalBuffer.shift();
 
         let sprites = [this.sprites.path + emotion +"_ClosedMouth.png", this.sprites.path + emotion +"_OpenMouth.png"]
 
-        this.animator.animate(this.characterSpriteImg, sprites, mouthSpeed, true);
+        // this.spriteAnimator.animate(this.characterSpriteImg, sprites, mouthSpeed, true);
+        this.dialogAnimator.showDialog(text);
         
     }
 
     shutUp = () => {
         /* Shuts the character up */
         
-        this.animator.cancelAnimation();
+        this.spriteAnimator.cancelAnimation();
 
         // Force mouth to close
         if (this.characterSpriteImg.src.includes("OpenMouth"))
@@ -93,7 +100,7 @@ class CharacterManager{
 }
 
 let ether = new CharacterManager("ether");
-ether.talk(150);
+ether.talk(150, "My name is Ether Netts, and I'm an <angry> archeology student at Gressenheller University. Not to brag, but my tutor is the famous Professor Hershel Layton, I asume you know exactly who I'm talking about. <sad>");
 setTimeout(() => {
     console.log("shutting up")
     ether.shutUp();

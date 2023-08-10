@@ -140,6 +140,8 @@
   }
 
   .dialogueText{
+    white-space: pre;
+    text-wrap: wrap;
     font-family: monospace;
     color: black;
     position: absolute;

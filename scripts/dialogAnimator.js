@@ -1,4 +1,4 @@
-class DialogueAnimator{
+class DialogAnimator{
 
     constructor(dialogBox){
         this.dialogBox = dialogBox;
@@ -10,9 +10,13 @@ class DialogueAnimator{
             "emoteRegex": /<.*?>/g
         }
 
+        this.animationFrame = null;
+        this.talking = false;
+        this.stop = false;
+        this.fps = 30
     }
 
-    _splitDialogueToSentences = (text) => {
+    _splitDialogueToComments = (text) => {
         /* Split the dialogue into sentences and append them to the sentences array. */
 
         let words = text.split(" ");
@@ -59,7 +63,7 @@ class DialogueAnimator{
 
                     // If no emotion is stated, set it to idle
                     if(emotionalBuffer.length != comments.length) 
-                        emotionalBuffer.push("idle");
+                        emotionalBuffer.push("<idle>");
                 }
 
                 currentSentence = "";                
@@ -71,15 +75,49 @@ class DialogueAnimator{
 
         // Append the last (incomplete) sentence as a comment, if there is one.
         if (currentSentence != "") comments.push(currentSentence.slice(0, -1));
-        if (emotionalBuffer.length != comments.length) emotionalBuffer.push("idle");
+        if (emotionalBuffer.length != comments.length) emotionalBuffer.push("<idle>");
 
-        console.log(comments)
-        console.log(emotionalBuffer)
         return comments;
             
     }
+
+    _animateText(text) {
+        /* Animate the text by adding one character at a time every "mouthSpeed" miliseconds. */
+
+        this.dialogBox.innerText = "";
+        let i = 0;
+
+        const _animate = () => {
+            
+            setTimeout(() => {
+
+                if (i >= text.length || this.stop){
+                    window.cancelAnimationFrame(this.animationFrame);
+                    return;
+                }
+
+                this.dialogBox.innerText += text[i];
+                i++;
+
+                this.animationFrame = window.requestAnimationFrame(_animate);
+            }, 1000/this.fps);
+        }
+
+        _animate();
+
+    }
+
+
+    showDialog = (text) => {
+        /* Show the dialogue in the dialog box. */
+
+        let comments = this._splitDialogueToComments(text);
+        console.log(comments);
+
+        const _showNextComment = () => this._animateText(comments.shift(), 50);
+
+        this._animateText(comments.shift(), 50);
+        
+        this.dialogBox.addEventListener("click", _showNextComment);
+    }
 }
-
-let test = new DialogueAnimator("dialogBox")
-
-test._splitDialogueToSentences("My name is Ether Netts, and I'm an <angry> archeology student at Gressenheller University. -> Not to brag, but my tutor is the famous Professor Hershel Layton, I asume you know exactly who I'm talking about. <sad>")
