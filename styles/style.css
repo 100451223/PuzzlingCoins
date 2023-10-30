@@ -143,6 +143,8 @@
     white-space: pre;
     text-wrap: wrap;
     font-family: monospace;
+    /* text-align: justify;
+    text-justify: inter-word; */
     color: black;
     position: absolute;
     width: 90%;

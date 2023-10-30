@@ -4,23 +4,30 @@ class SpriteAnimator {
         this.animationFrame = null;
         this.spriteIndex = 0;
         this.fps = fps
-        this.stop = false;
+        this.stopAnimation = false;
     }
 
-    _animate = (target, sprites, speed, loop) => {
-        /* Animate the character by changing the character sprite every "speed" miliseconds. */
+    _animate = (target, sprites, loop) => {
+        /* 
+        Set up animation frame. 
+        Given an HTML target and a list of sprites, animate the target by looping through every sprite in the list (if loop is true). 
+        Alternatively, if loop is false, stop the animation after the last sprite.
+        */
 
         setTimeout(() =>{
 
-            if (this.stop){
+            if (this.stopAnimation)
+            {
                 window.cancelAnimationFrame(this.animationFrame);
+                this.stopAnimation = false;
                 return;
             }
 
             target.src = chrome.extension.getURL(sprites[this.spriteIndex]);
             this.spriteIndex++;
 
-            if (this.spriteIndex == sprites.length){
+            if (this.spriteIndex == sprites.length)
+            {
                 if (loop){
                     this.spriteIndex = 0;
                 } else {
@@ -28,12 +35,21 @@ class SpriteAnimator {
                 }
             }
 
-            this.animationFrame = window.requestAnimationFrame(() => this.animate(target, sprites, speed, loop))
+            this.animationFrame = window.requestAnimationFrame(() => this.animate(target, sprites, loop))
 
         }, 1000/this.fps);
     }
 
-    animate = (target, sprites, speed, loop) => this._animate(target, sprites, speed, loop)
+    resetAnimator = () => {
+        /* Reset the animator to its initial state. */
 
-    cancelAnimation = () => this.stop = true
+        this.spriteIndex = 0;
+        this.stopAnimation = false;
+        if (this.animationFrame) window.cancelAnimationFrame(this.animationFrame);
+        this.animationFrame = null;
+    }
+
+    animate = (target, sprites, loop) => this._animate(target, sprites, loop)
+
+    cancelAnimation = () => this.stopAnimation = true
 }

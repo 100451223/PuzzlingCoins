@@ -11,13 +11,14 @@ class DialogAnimator{
         }
 
         this.animationFrame = null;
-        this.talking = false;
-        this.stop = false;
+        this.isTalking = false;
+        this.stopByFastTalk = false;
+        this.currentText = "";
         this.fps = 30
     }
 
     _splitDialogueToComments = (text) => {
-        /* Split the dialogue into sentences and append them to the sentences array. */
+        /* Split the dialogue into n comments of m sentences. */
 
         let words = text.split(" ");
         let emotionalBuffer = [];
@@ -44,7 +45,7 @@ class DialogAnimator{
             // Change character's emotion
             if (words[i].match(this.config.emoteRegex) != null)
             {
-                emotionalBuffer.push(words[i]);
+                emotionalBuffer.push(words[i].slice(1, -1));
                 continue;
             }
 
@@ -63,26 +64,49 @@ class DialogAnimator{
 
                     // If no emotion is stated, set it to idle
                     if(emotionalBuffer.length != comments.length) 
-                        emotionalBuffer.push("<idle>");
+                        emotionalBuffer.push("idle");
                 }
 
                 currentSentence = "";                
             }
 
             currentSentence += words[i] + " ";
-        }
-
+        }        
 
         // Append the last (incomplete) sentence as a comment, if there is one.
-        if (currentSentence != "") comments.push(currentSentence.slice(0, -1));
-        if (emotionalBuffer.length != comments.length) emotionalBuffer.push("<idle>");
+        if (currentSentence != "") comments.push(currentComment + currentSentence.slice(0, -1));
+        if (emotionalBuffer.length != comments.length) emotionalBuffer.push("idle");
 
-        return comments;
-            
+        return {comments: comments, emotions: emotionalBuffer}
+    };
+
+    resetAnimator = () => {
+        /* Reset the animator to its initial state. */
+
+        console.log("Resetting dialog animator");
+
+        this.dialogBox.innerText = "";
+        this.isTalking = false;
+        this.stopByFastTalk = false;
+        this.currentText = "";
+        if (this.animationFrame) window.cancelAnimationFrame(this.animationFrame);
+        this.animationFrame = null;
+        return
     }
 
-    _animateText(text) {
+    fastTalk = () => {
+        /* Finish writing the current dialogue at once. */
+
+        this.stopByFastTalk = true;
+        this.dialogBox.innerText = this.currentText;
+        this.isTalking = false;
+    }
+
+    animate = (text, callback) => {
         /* Animate the text by adding one character at a time every "mouthSpeed" miliseconds. */
+
+        this.isTalking = true;
+        this.currentText = text;
 
         this.dialogBox.innerText = "";
         let i = 0;
@@ -91,8 +115,14 @@ class DialogAnimator{
             
             setTimeout(() => {
 
-                if (i >= text.length || this.stop){
+                if (i >= text.length || this.stopByFastTalk)
+                {   
                     window.cancelAnimationFrame(this.animationFrame);
+                    this.isTalking = false;
+                    this.stopByFastTalk = false;
+                    this.currentText = "";
+                    if (callback) 
+                        callback();
                     return;
                 }
 
@@ -107,17 +137,4 @@ class DialogAnimator{
 
     }
 
-
-    showDialog = (text) => {
-        /* Show the dialogue in the dialog box. */
-
-        let comments = this._splitDialogueToComments(text);
-        console.log(comments);
-
-        const _showNextComment = () => this._animateText(comments.shift(), 50);
-
-        this._animateText(comments.shift(), 50);
-        
-        this.dialogBox.addEventListener("click", _showNextComment);
-    }
 }
