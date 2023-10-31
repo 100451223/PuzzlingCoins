@@ -36,7 +36,15 @@
     "content_scripts": [
     {
         "css": ["styles/puzzles.css", "styles/style.css"],
-        "js": ["scripts/jquery-3.6.3.min.js", "scripts/puzzles/puzzle001.js", "scripts/puzzles.js", "scripts/utilities.js", "scripts/spriteAnimator.js", "scripts/coinManager.js", "scripts/dialogAnimator.js", "scripts/characterManager.js", "scripts/content.js"],
+        "js": [ "scripts/jquery-3.6.3.min.js", 
+                "scripts/utilities.js", 
+                "scripts/spriteAnimator.js", 
+                "scripts/coinManager.js", 
+                "scripts/dialogAnimator.js", 
+                "scripts/characterManager.js", 
+                "scripts/puzzles/puzzle001.js", 
+                "scripts/puzzles.js", 
+                "scripts/content.js"],
         "matches": ["https://*/*"]
     }
     ]

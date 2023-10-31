@@ -192,6 +192,8 @@
 }
 
 .puzzleStatement {
+    white-space: pre;
+    text-wrap: wrap;
     padding: 20px;
     text-align: justify;
 }

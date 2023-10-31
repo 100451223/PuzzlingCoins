@@ -21,7 +21,6 @@ class Puzzle {
         this.puzzleObject   = puzzleHandler;
         this.puzzleAudio    = this._createPuzzleAudio();
         this.RightWrongImg  = this._createResultImages();
-
         this.submitButton.addEventListener("click", this._submissionHandler);
     }
         
@@ -329,8 +328,10 @@ class Puzzle {
         puzzleStatement.className = "puzzleStatement";
     
         this.screens.upperScreen.appendChild(puzzleStatement);
-        writeText(puzzleStatementText, "puzzleStatement", false)
-    
+        
+        console.log(puzzleStatementText)
+        let dialogAnimator = new DialogAnimator(puzzleStatement);
+        dialogAnimator.animate(puzzleStatementText, null)
     }
 
     _getPuzzleInfo = async () => {
@@ -426,9 +427,9 @@ class Puzzle {
 
 }
 
-// // MAIN
-// asm = new ASilentMelody();
+// MAIN
+asm = new ASilentMelody();
 
-// pzl = new Puzzle("001", asm);
+pzl = new Puzzle("001", asm);
 
-// pzl.startPuzzle();
+pzl.startPuzzle();

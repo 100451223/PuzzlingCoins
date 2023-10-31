@@ -17,7 +17,6 @@ class CharacterManager{
         this.characterSpriteImg = this.characterElem.children[1];
         
         // Character animation variables
-
         this.spriteAnimator = new SpriteAnimator(8);
         this.dialogAnimator = new DialogAnimator(this.textBox);  
         
@@ -144,6 +143,18 @@ class CharacterManager{
         return
     }
 
+    talk_many(dialogue_list) {
+        /* Given a list of dialogues, start a new dialogue when the previous one is finished */
+
+        let callback = () => {
+            if (dialogue_list.length == 0)
+                return;
+            return this.talk_many(dialogue_list);
+        }
+
+        return this.talk(dialogue_list.shift(), callback);
+    }
+
     _removeCharacterSprite = (next_dialogue_callback) => {
         /* Hide the character sprite the body. Then, start a new dialogue if specified on next_dialogue_callback */
 
@@ -171,29 +182,10 @@ class CharacterManager{
 /* TEST EXAMPLE */
 
 
-let ether = new CharacterManager("ether");
+// let ether = new CharacterManager("ether");
 
 let dialog1 = "Hey! Hello there! Can you hear (or maybe read) me? My name is Ether Netts, and I'm an archeology student at Gressenheller University. Not to brag, but my tutor is the famous Professor Hershel Layton, I asume you know exactly who I'm talking about, hehe."
 let dialog2 = "What? <sigh> Why am I here? Ah, it's because you solved *the* puzzle! You know, I spent so much time crafting it in hopes of finding someone smart enough to solve it... and you did! That's why... I NEED YOUR HELP!"
 let dialog3 = "What I'm about to tell you is very important. The fate of the world is at stake here! So, I need to know beforehand...  you, who solved the second hardest puzzle in the world, would you like to help solve the #1 biggest puzzle in the world... The truth about the Internet!"
 
-let callback2 = () => {
-    console.log("Start 3")
-    ether.talk(dialog3, null);
-}
-
-let callback = () => {
-    console.log("Start 2")
-    ether.talk(dialog2, callback2);
-}
-
-ether.talk(dialog1, callback);
-
-
-
-
-
-
-
-
-
+// ether.talk_many([dialog1, dialog2, dialog3]);
